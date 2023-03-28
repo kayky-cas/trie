@@ -3,54 +3,54 @@ struct Node<T>
 where
     T: Copy,
 {
-    name: char,
+    id: char,
     childs: [Option<Box<Node<T>>>; 26],
-    val: Option<T>,
+    value: Option<T>,
 }
 
 impl<T> Node<T>
 where
     T: Copy,
 {
-    fn new(val: char) -> Self {
+    fn new(id: char) -> Self {
         Self {
-            name: val,
+            id,
             childs: Default::default(),
-            val: None,
+            value: None,
         }
     }
 
-    fn append_child(&mut self, buffer: &[u8], val: T) {
+    fn append_child(&mut self, buffer: &[u8], value: T) {
         if buffer.is_empty() {
-            self.val = Some(val);
+            self.value = Some(value);
             return;
         }
 
-        let idx = (buffer[0] - b'a') as usize;
+        let index = (buffer[0] - b'a') as usize;
 
-        if self.childs[idx].is_none() {
-            self.childs[idx] = Some(Box::new(Node::new(buffer[0] as char)));
+        if self.childs[index].is_none() {
+            self.childs[index] = Some(Box::new(Node::new(buffer[0] as char)));
         }
 
-        let child = &mut self.childs[idx];
+        let child = &mut self.childs[index];
 
         match child {
-            Some(child) => child.append_child(&buffer[1..], val),
+            Some(child) => child.append_child(&buffer[1..], value),
             None => todo!(),
         }
     }
 
     fn get(&self, buffer: &[u8]) -> Option<T> {
         if buffer.is_empty() {
-            return self.val;
+            return self.value;
         }
-        let idx = (buffer[0] - b'a') as usize;
+        let index = (buffer[0] - b'a') as usize;
 
-        if self.childs[idx].is_none() {
+        if self.childs[index].is_none() {
             return None;
         }
 
-        let child = &self.childs[idx];
+        let child = &self.childs[index];
 
         match child {
             Some(child) => child.get(&buffer[1..]),
@@ -62,8 +62,8 @@ where
 fn main() {
     let mut root = Node::new(Default::default());
 
-    root.append_child("hello".as_bytes(), 10);
-    root.append_child("helicoptero".as_bytes(), 15);
+    root.append_child(b"hello", 10);
+    root.append_child(b"helicoptero", 15);
 
-    println!("{:?}", root.get("helicoptero".as_bytes()));
+    println!("{:?}", root.get(b"helicoptero"));
 }
