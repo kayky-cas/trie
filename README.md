@@ -1,6 +1,6 @@
 # Trie
 
-Um exemplo de HashTree utilizando trie.
+Um exemplo de HashTree utilizando uma trie extremamente ineficiente.
 
 #### Na prática:
 
