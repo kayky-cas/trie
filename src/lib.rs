@@ -2,7 +2,7 @@ use std::fmt::{Debug, Formatter};
 
 pub trait Trie {
     fn append(&mut self, word: &str);
-    fn search(&self, word: &str) -> Option<String>;
+    fn search(&self, word: &str) -> Vec<String>;
 }
 
 pub struct ArrayNode {
@@ -54,29 +54,7 @@ impl Trie for ArrayNode {
         }
     }
 
-    fn search(&self, word: &str) -> Option<String> {
-        if word.is_empty() {
-            if self.end {
-                Some(String::from(""))
-            } else {
-                None
-            }
-        } else {
-            let pos = word.as_bytes()[0] as usize;
-
-            if self.children[pos].is_none() {
-                None
-            } else {
-                let result = self.children[pos].as_ref().unwrap().search(&word[1..]);
-
-                match result {
-                    Some(mut result) => {
-                        result.insert(0, word.chars().nth(0).unwrap());
-                        Some(result)
-                    }
-                    None => None,
-                }
-            }
-        }
+    fn search(&self, word: &str) -> Vec<String> {
+        todo!()
     }
 }

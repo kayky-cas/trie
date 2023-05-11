@@ -5,5 +5,5 @@ fn main() {
     root.append("kayky");
     root.append("kayke");
 
-    println!("{:?}", root.search("kayky"));
+    println!("{:?}", root.search("kayk"));
 }
