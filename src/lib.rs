@@ -1,3 +1,5 @@
+use std::fmt::{Debug, Formatter};
+
 pub trait Trie {
     fn append(&mut self, word: &str);
     fn search(&self, word: &str) -> Option<String>;
@@ -6,6 +8,24 @@ pub trait Trie {
 pub struct ArrayNode {
     children: [Option<Box<ArrayNode>>; 255],
     end: bool,
+}
+
+impl Debug for ArrayNode {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let children_str = self
+            .children
+            .iter()
+            .enumerate()
+            .filter(|(_, child)| child.is_some())
+            .map(|(i, _)| i.to_string())
+            .collect::<Vec<String>>()
+            .join(", ");
+
+        f.debug_struct("ArrayNode")
+            .field("children", &children_str.as_str())
+            .field("end", &self.end)
+            .finish()
+    }
 }
 
 const DEFAULT_ARRAY_NODE_VALUE: Option<Box<ArrayNode>> = None;
@@ -35,6 +55,28 @@ impl Trie for ArrayNode {
     }
 
     fn search(&self, word: &str) -> Option<String> {
-        todo!()
+        if word.is_empty() {
+            if self.end {
+                Some(String::from(""))
+            } else {
+                None
+            }
+        } else {
+            let pos = word.as_bytes()[0] as usize;
+
+            if self.children[pos].is_none() {
+                None
+            } else {
+                let result = self.children[pos].as_ref().unwrap().search(&word[1..]);
+
+                match result {
+                    Some(mut result) => {
+                        result.insert(0, word.chars().nth(0).unwrap());
+                        Some(result)
+                    }
+                    None => None,
+                }
+            }
+        }
     }
 }
