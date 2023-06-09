@@ -5,12 +5,12 @@ pub trait Trie {
     fn search(&self, word: &str) -> Vec<String>;
 }
 
-pub struct ArrayNode {
-    children: [Option<Box<ArrayNode>>; 255],
+pub struct Node {
+    children: [Option<Box<Node>>; 255],
     end: bool,
 }
 
-impl Debug for ArrayNode {
+impl Debug for Node {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let children_str = self
             .children
@@ -28,9 +28,9 @@ impl Debug for ArrayNode {
     }
 }
 
-const DEFAULT_ARRAY_NODE_VALUE: Option<Box<ArrayNode>> = None;
+const DEFAULT_ARRAY_NODE_VALUE: Option<Box<Node>> = None;
 
-impl Default for ArrayNode {
+impl Default for Node {
     fn default() -> Self {
         Self {
             children: [DEFAULT_ARRAY_NODE_VALUE; 255],
@@ -39,7 +39,7 @@ impl Default for ArrayNode {
     }
 }
 
-impl Trie for ArrayNode {
+impl Trie for Node {
     fn append(&mut self, word: &str) {
         if word.is_empty() {
             self.end = true;
@@ -47,7 +47,7 @@ impl Trie for ArrayNode {
             let pos = word.as_bytes()[0] as usize;
 
             if self.children[pos].is_none() {
-                self.children[pos] = Some(Box::new(ArrayNode::default()));
+                self.children[pos] = Some(Box::new(Node::default()));
             }
 
             self.children[pos].as_mut().unwrap().append(&word[1..]);
